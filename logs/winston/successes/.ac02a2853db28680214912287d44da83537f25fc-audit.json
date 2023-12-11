@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "E:\\courses\\programmingHero\\Nexus Projects\\4u-logistics\\4u-backend\\logs\\winston\\successes\\.ac02a2853db28680214912287d44da83537f25fc-audit.json",
+    "files": [
+        {
+            "date": 1700668837251,
+            "name": "E:\\courses\\programmingHero\\Nexus Projects\\4u-logistics\\4u-backend\\logs\\winston\\successes\\4u-2023-22-11-22-success.log",
+            "hash": "ba78b365c35ffa8bb16aeb4ded67c6a583186c937b2829a10ee30f4b249f2926"
+        }
+    ],
+    "hashType": "sha256"
+}
