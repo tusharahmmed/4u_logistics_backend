@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Prisma, User } from '@prisma/client';
+import { Prisma, USER_ROLE, User } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import httpStatus from 'http-status';
 import config from '../../../config';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
@@ -106,6 +108,15 @@ const getSingleUser = async (id: string) => {
 
 // get single user
 const deleteSingleUser = async (id: string) => {
+  // check role
+  const wantToDeleteUser = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+  if (wantToDeleteUser?.role === USER_ROLE.super_admin) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Can not delete super admin!');
+  }
   const result = await prisma.user.delete({
     where: {
       id,

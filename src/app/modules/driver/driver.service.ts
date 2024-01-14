@@ -31,12 +31,33 @@ const getAllFrom = async (
   // generate search condition
   if (searchTerm) {
     andConditions.push({
-      OR: DRIVER_REQUEST_SEARCH_FIELDS.map(field => ({
-        [field]: {
-          contains: searchTerm,
-          mode: 'insensitive',
-        },
-      })),
+      OR: DRIVER_REQUEST_SEARCH_FIELDS.map(field => {
+        if (field !== 'status') {
+          return {
+            [field]: {
+              contains: searchTerm,
+              mode: 'insensitive',
+            },
+          };
+        } else {
+          let search;
+          if ('pending'.startsWith(searchTerm.toLowerCase())) {
+            search = 'pending';
+          }
+          if ('canceled'.startsWith(searchTerm.toLowerCase())) {
+            search = 'canceled';
+          }
+          if ('completed'.startsWith(searchTerm.toLowerCase())) {
+            search = 'completed';
+          }
+
+          return {
+            [field]: {
+              equals: search,
+            },
+          };
+        }
+      }),
     });
   }
 
@@ -51,7 +72,7 @@ const getAllFrom = async (
     });
   }
 
-  const whereConditions: Prisma.DriverRequestWhereInput =
+  const whereConditions: Prisma.DriverRequestWhereInput | any =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
   const result = await prisma.driverRequest.findMany({

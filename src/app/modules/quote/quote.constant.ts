@@ -2,6 +2,7 @@ export const QUOTE_SEARCH_FIELDS = [
   'name',
   'serName',
   'email',
+  'phone',
   'pickupZip',
   'deliveryZip',
 ];

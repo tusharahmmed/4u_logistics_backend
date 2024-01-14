@@ -45,13 +45,13 @@ const signin = async (payload: Pick<User, 'email' | 'password'>) => {
   // create token
 
   const accessToken = jwtHelpers.createToken(
-    { id: user.id, role: user.role },
+    { id: user.id, role: user.role, permissions: user.permissions },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
 
   const refreshToken = jwtHelpers.createToken(
-    { id: user.id, role: user.role },
+    { id: user.id, role: user.role, permissions: user.permissions },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string
   );
@@ -89,7 +89,11 @@ const refreshToken = async (payload: string) => {
 
   // generate new accessToken
   const newAccessToken = jwtHelpers.createToken(
-    { id: verifiedUser.id, role: verifiedUser.role },
+    {
+      id: verifiedUser.id,
+      role: verifiedUser.role,
+      permissions: verifiedUser.permissions,
+    },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );

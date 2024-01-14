@@ -22,6 +22,10 @@ const signin = catchAsync(async (req, res) => {
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: config.env === 'production',
+    sameSite: 'none',
+    // secure: false,
+    // domain: '4u-frontend.vercel.app',
+    expires: new Date(Date.now() + 12 * 30 * 24 * 3600000), // 1year
   });
 
   sendResponse(res, {

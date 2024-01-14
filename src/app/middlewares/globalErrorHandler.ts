@@ -7,11 +7,12 @@ import ApiError from '../../errors/ApiError';
 import handleValidationError from '../../errors/handleValidationError';
 
 import { Prisma } from '@prisma/client';
+import httpStatus from 'http-status';
+import { TokenExpiredError } from 'jsonwebtoken';
 import { ZodError } from 'zod';
 import handleClientError from '../../errors/handleClientError';
 import handleZodError from '../../errors/handleZodError';
 import { IGenericErrorMessage } from '../../interfaces/error';
-import { errorlogger } from '../../shared/logger';
 
 const globalErrorHandler: ErrorRequestHandler = (
   error,
@@ -19,9 +20,12 @@ const globalErrorHandler: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  // config.env === 'development'
+  //   ? console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
+  //   : errorlogger.error(`🐱‍🏍 globalErrorHandler ~~`, error);
   config.env === 'development'
     ? console.log(`🐱‍🏍 globalErrorHandler ~~`, { error })
-    : errorlogger.error(`🐱‍🏍 globalErrorHandler ~~`, error);
+    : console.log(`🐱‍🏍 globalErrorHandler ~~`, error);
 
   let statusCode = 500;
   let message = 'Something went wrong !';
@@ -42,6 +46,17 @@ const globalErrorHandler: ErrorRequestHandler = (
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
+  } else if (error instanceof TokenExpiredError) {
+    statusCode = httpStatus.UNAUTHORIZED;
+    message = 'Access Token Expired';
+    errorMessages = error?.message
+      ? [
+          {
+            path: '',
+            message: error?.message,
+          },
+        ]
+      : [];
   } else if (error instanceof ApiError) {
     statusCode = error?.statusCode;
     message = error.message;

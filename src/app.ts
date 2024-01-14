@@ -8,7 +8,7 @@ import { applicationRoutes } from './app/routes';
 
 const app: Application = express();
 
-app.use(cors());
+app.use(cors({ origin: 'https://4u-frontend.vercel.app', credentials: true }));
 app.use(cookieParser());
 
 //parser
